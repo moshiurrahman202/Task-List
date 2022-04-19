@@ -10,6 +10,7 @@ let clearBtn =  document.querySelector("#clear-task-btn");
 form.addEventListener("submit", addTask);
 taskLilst.addEventListener("click", removeTask);
 clearBtn.addEventListener("click", clearTask);
+filter.addEventListener("keyup", filterTask);
 
 //Define function
 // Add Task
@@ -48,4 +49,17 @@ function clearTask(){
     while(taskLilst.firstChild){
         taskLilst.removeChild(taskLilst.firstChild);
     }
+}
+
+// Filter Task
+function filterTask(e){
+    let text = e.target.value.toLowerCase();
+    document.querySelectorAll("li").forEach(task => {
+        let item = task.firstChild.textContent;
+        if(item.toLocaleLowerCase().indexOf(text) != -1){
+            task.style.display = "block";
+        }else{
+            task.style.display = "none";
+        }
+    })
 }
