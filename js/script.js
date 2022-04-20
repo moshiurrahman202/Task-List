@@ -2,13 +2,13 @@
 let form = document.querySelector("#task-form");
 let taskInput = document.querySelector("#new-task");
 let filter = document.querySelector("#task-filter");
-let taskLilst = document.querySelector("ul");
+let taskList = document.querySelector("ul");
 let clearBtn =  document.querySelector("#clear-task-btn");
 
 
 // Define Even Listener
 form.addEventListener("submit", addTask);
-taskLilst.addEventListener("click", removeTask);
+taskList.addEventListener("click", removeTask);
 clearBtn.addEventListener("click", clearTask);
 filter.addEventListener("keyup", filterTask);
 document.addEventListener("DOMContentLoaded", getTasks);
@@ -27,7 +27,7 @@ function addTask(e){
         link.style.textDecoration = "none";
         link.style.color = "red";
         li.appendChild(link);
-        taskLilst.appendChild(li);
+        taskList.appendChild(li);
         //invock for local storage
         storeTaskInLocalStorage(taskInput.value);
         // invocktion end
@@ -40,7 +40,9 @@ function addTask(e){
 function removeTask(e){
     if(e.target.hasAttribute("href")){
       if(confirm("Are you sure?")){
-          e.target.parentElement.remove()
+          e.target.parentElement.remove();
+          //invock for remove task from local storage
+          removeFromLocalStorage(e.target.parentElement);
       }
 }}
 
@@ -50,9 +52,10 @@ function clearTask(){
     // taskLilst.innerHTML = "";
 
     // faster
-    while(taskLilst.firstChild){
-        taskLilst.removeChild(taskLilst.firstChild);
+    while(taskList.firstChild){
+        taskList.removeChild(taskList.firstChild);
     }
+    localStorage.clear()
 }
 
 // Filter Task
@@ -68,7 +71,7 @@ function filterTask(e){
     })
 }
 
-//  Store in locale storage
+//  Store task in locale storage
 function storeTaskInLocalStorage(task){
     let tasks;
     if (localStorage.getItem("tasks") === null){
@@ -78,10 +81,10 @@ function storeTaskInLocalStorage(task){
     }
     tasks.push(task);
 
-    localStorage.setItem("taskss", JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// send tasks to dom from locale storage
+// send task to dom from locale storage
 function getTasks(){
     let tasks;
     if (localStorage.getItem("tasks") === null){
@@ -98,6 +101,25 @@ function getTasks(){
         link.style.textDecoration = "none";
         link.style.color = "red";
         li.appendChild(link);
-        taskLilst.appendChild(li);
+        taskList.appendChild(li);
     })
+}
+
+// define for remove task from local storage
+function removeFromLocalStorage(taskItem){
+    let tasks;
+    if (localStorage.getItem("tasks") === null){
+        tasks = [];
+    }else{
+        tasks = JSON.parse(localStorage.getItem("tasks"));
+    }
+    let li = taskItem;
+    li.removeChild(li.lastChild);
+    tasks.forEach((task, index) =>{
+        if(li.textContent.trim() === task){
+            tasks.splice(index, 1);
+        }
+    });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    
 }
