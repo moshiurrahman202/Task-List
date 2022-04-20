@@ -11,6 +11,7 @@ form.addEventListener("submit", addTask);
 taskLilst.addEventListener("click", removeTask);
 clearBtn.addEventListener("click", clearTask);
 filter.addEventListener("keyup", filterTask);
+document.addEventListener("DOMContentLoaded", getTasks);
 
 //Define function
 // Add Task
@@ -27,6 +28,9 @@ function addTask(e){
         link.style.color = "red";
         li.appendChild(link);
         taskLilst.appendChild(li);
+        //invock for local storage
+        storeTaskInLocalStorage(taskInput.value);
+        // invocktion end
         taskInput.value = "";
     }
     e.preventDefault();
@@ -61,5 +65,39 @@ function filterTask(e){
         }else{
             task.style.display = "none";
         }
+    })
+}
+
+//  Store in locale storage
+function storeTaskInLocalStorage(task){
+    let tasks;
+    if (localStorage.getItem("tasks") === null){
+        tasks = [];
+    }else{
+        tasks = JSON.parse(localStorage.getItem("tasks"));
+    }
+    tasks.push(task);
+
+    localStorage.setItem("taskss", JSON.stringify(tasks));
+}
+
+// send tasks to dom from locale storage
+function getTasks(){
+    let tasks;
+    if (localStorage.getItem("tasks") === null){
+        tasks = [];
+    }else{
+        tasks = JSON.parse(localStorage.getItem("tasks"));
+    }
+    tasks.forEach(task => {
+        let li =document.createElement("li");
+        li.appendChild(document.createTextNode(task + " "));
+        let link = document.createElement("a");
+        link.setAttribute("href", "#");
+        link.innerHTML = "x";
+        link.style.textDecoration = "none";
+        link.style.color = "red";
+        li.appendChild(link);
+        taskLilst.appendChild(li);
     })
 }
